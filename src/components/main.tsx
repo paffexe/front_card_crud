@@ -89,7 +89,6 @@ const Main = () => {
 
   return (
     <div className="container mx-auto py-6">
-      {/* Header */}
       <div className="bg-slate-200 p-4 rounded-lg flex justify-between items-center">
         <Typography.Title level={3}>Blog CRUD</Typography.Title>
         <Button type="primary" onClick={showModal}>
@@ -97,7 +96,6 @@ const Main = () => {
         </Button>
       </div>
 
-      {/* Cards */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {data.map((item, index) => (
           <Card
@@ -141,7 +139,6 @@ const Main = () => {
         ))}
       </div>
 
-      {/* Modal */}
       <Modal
         open={isModalOpen}
         onOk={handleOk}
