@@ -38,7 +38,6 @@ const Main = () => {
   const [editingItem, setEditingItem] = useState<DataType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Initialize AOS
   useEffect(() => {
     AOS.init({
       duration: 800,
@@ -48,7 +47,6 @@ const Main = () => {
     });
   }, []);
 
-  // Refresh AOS when data changes
   useEffect(() => {
     AOS.refresh();
   }, [data]);
