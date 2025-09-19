@@ -5,12 +5,14 @@ import {
   Modal,
   Form,
   Input,
-  Checkbox,
   Card,
   type FormProps,
+  Radio,
 } from "antd";
 import { useEffect, useState } from "react";
 import { api } from "../api";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 interface DataType {
   fname: string;
@@ -36,6 +38,21 @@ const Main = () => {
   const [editingItem, setEditingItem] = useState<DataType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Initialize AOS
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: "ease-in-out",
+      once: true,
+      mirror: false,
+    });
+  }, []);
+
+  // Refresh AOS when data changes
+  useEffect(() => {
+    AOS.refresh();
+  }, [data]);
+
   const handleCancel = () => {
     setIsModalOpen(false);
     setEditingItem(null);
@@ -53,9 +70,9 @@ const Main = () => {
   const onFinish: FormProps<FieldType>["onFinish"] = async (values) => {
     try {
       if (editingItem) {
-        await api.put(`/Blog/${editingItem.id}`, values);
+        await api.put(`/student/${editingItem.id}`, values);
       } else {
-        await api.post("/Blog", values);
+        await api.post("/student", values);
       }
       handleCancel();
       setReload((p) => !p);
@@ -64,7 +81,7 @@ const Main = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await api.delete(`/Blog/${id}`);
+      await api.delete(`/student/${id}`);
       setReload((p) => !p);
     } catch (error) {}
   };
@@ -78,7 +95,7 @@ const Main = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get("/Blog");
+        const response = await api.get("/student");
         setData(response.data);
       } catch (error) {
         console.log(error);
@@ -89,7 +106,10 @@ const Main = () => {
 
   return (
     <div className="container mx-auto py-6">
-      <div className="bg-slate-200 p-4 rounded-lg flex justify-between items-center">
+      <div
+        className="bg-slate-200 p-4 rounded-lg flex justify-between items-center"
+        data-aos="fade-down"
+      >
         <Typography.Title level={3}>Blog CRUD</Typography.Title>
         <Button type="primary" onClick={showModal}>
           +
@@ -100,9 +120,11 @@ const Main = () => {
         {data.map((item, index) => (
           <Card
             key={item.id}
-            title={`${index + 1}. ${item.fname} ${item.lname}`}
+            title={`${index + 1}. ${item.fname}`}
             variant="borderless"
             style={{ width: 300 }}
+            data-aos="fade-up"
+            data-aos-delay={index * 100}
             extra={
               <div className="flex gap-2">
                 <Button
@@ -182,10 +204,12 @@ const Main = () => {
           <Form.Item<FieldType>
             label="Gender"
             name="gender"
-            valuePropName="checked"
+            rules={[{ required: true, message: "Select gender" }]}
           >
-            <Checkbox>Male</Checkbox>
-            <Checkbox>Female</Checkbox>
+            <Radio.Group>
+              <Radio value={true}>Male</Radio>
+              <Radio value={false}>Female</Radio>
+            </Radio.Group>
           </Form.Item>
 
           <Form.Item<FieldType>
